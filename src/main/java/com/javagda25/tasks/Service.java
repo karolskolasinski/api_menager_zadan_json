@@ -83,7 +83,7 @@ public class Service {
             if (operation.equalsIgnoreCase("read")) {
                 // zmiana tekst -> obiekty
                 // unmarshaller
-                System.out.println(g.fromJson(response.body(), List.class));
+                g.fromJson(response.body(), List.class).stream().forEach(System.out::println);
             }
             if (operation.equalsIgnoreCase("update")) {
                 System.out.println("Update success");
