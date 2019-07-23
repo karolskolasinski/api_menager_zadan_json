@@ -17,6 +17,8 @@ public class Service {
 
     /*CREATE-PUT*/
     static void create(Task task, String url) {
+        // zamiana obiekt -> tekst (json)
+        // marshaller - obiekt w tekst
         String jsonTask = g.toJson(task);
         HttpRequest create = HttpRequest
                 .newBuilder(URI.create(url))
@@ -40,6 +42,8 @@ public class Service {
 
     /*UPDATE-POST*/
     static void update(Task taskToEdit, String url) {
+        // zamiana obiekt -> tekst (json)
+        // marshaller - obiekt w tekst
         String jsonTask = g.toJson(taskToEdit);
         HttpRequest update = HttpRequest
                 .newBuilder(URI.create(url))
@@ -63,18 +67,30 @@ public class Service {
 
 
     static void serverResponse(String operation, HttpRequest request) {
+        // wysłanie przez klienta zapytania (request)
+//            // BodyHandler klasa która w swojej metodzie apply mówi co ma się wydarzyć z wynikiem.
+//​
+//            // client to obiekt który może wywołać SEND i przesłać request, a w wyniku otrzymuje odpowiedź (zawartość strony)
+//​
+//            // HttpResponse.BodyHandlers.ofString() - to gotowy obiekt który "radzi sobie" z odpowiedzią.
+//            //                                      został napisany w taki sposób by wyjście przepisać w postaci string'a
+//            //                                      i zwrócić go w body obiektu HttpResponse.
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (operation.equalsIgnoreCase("create")) {
                 System.out.println("Create success");
             }
             if (operation.equalsIgnoreCase("read")) {
+                // zmiana tekst -> obiekty
+                // unmarshaller
                 System.out.println(g.fromJson(response.body(), List.class));
             }
             if (operation.equalsIgnoreCase("update")) {
                 System.out.println("Update success");
             }
             if (operation.equalsIgnoreCase("delete")) {
+                // zmiana tekst -> obiekty
+                // unmarshaller
                 if (g.fromJson(response.body(), Boolean.class)) {
                     System.out.println("Delete success");
                 }
