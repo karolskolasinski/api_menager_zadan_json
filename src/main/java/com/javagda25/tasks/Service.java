@@ -74,7 +74,7 @@ public class Service {
             if (operation.equalsIgnoreCase("update")) {
                 System.out.println("Update success");
             }
-            if (operation.equalsIgnoreCase("update")) {
+            if (operation.equalsIgnoreCase("delete")) {
                 if (g.fromJson(response.body(), Boolean.class)) {
                     System.out.println("Delete success");
                 }
