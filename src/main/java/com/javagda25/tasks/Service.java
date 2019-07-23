@@ -23,12 +23,7 @@ public class Service {
                 .PUT(HttpRequest.BodyPublishers.ofString(jsonTask))
                 .header("Content-Type", "application/json")
                 .build();
-        try {
-            HttpResponse<String> response = client.send(create, HttpResponse.BodyHandlers.ofString());
-            System.out.println("Create success");
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        serverResponse("create", create);
     }
 
 
@@ -39,12 +34,7 @@ public class Service {
                 .newBuilder(URI.create(url))
                 .GET()
                 .build();
-        try {
-            HttpResponse<String> response = client.send(read, HttpResponse.BodyHandlers.ofString());
-            System.out.println(g.fromJson(response.body(), List.class));
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        serverResponse("read", read);
     }
 
 
@@ -56,12 +46,7 @@ public class Service {
                 .POST(HttpRequest.BodyPublishers.ofString(jsonTask))
                 .header("Content-Type", "application/json")
                 .build();
-        try {
-            HttpResponse<String> response = client.send(update, HttpResponse.BodyHandlers.ofString());
-            System.out.println("Update success");
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        serverResponse("update", update);
     }
 
 
@@ -73,19 +58,37 @@ public class Service {
                 .newBuilder(URI.create(url))
                 .DELETE()
                 .build();
+        serverResponse("delete", delete);
+    }
+
+
+    static void serverResponse(String operation, HttpRequest request) {
         try {
-            HttpResponse<String> response = client.send(delete, HttpResponse.BodyHandlers.ofString());
-            if (g.fromJson(response.body(), Boolean.class)) {
-                System.out.println("Delete success");
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (operation.equalsIgnoreCase("create")) {
+                System.out.println("Create success");
+            }
+            if (operation.equalsIgnoreCase("read")) {
+                System.out.println(g.fromJson(response.body(), List.class));
+            }
+            if (operation.equalsIgnoreCase("update")) {
+                System.out.println("Update success");
+            }
+            if (operation.equalsIgnoreCase("update")) {
+                if (g.fromJson(response.body(), Boolean.class)) {
+                    System.out.println("Delete success");
+                }
             }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
 
+
     public static String getUrl() {
         return url;
     }
+
 
     public static String getNewUrl(String command, String taskNumber) {
         String url = Service.getUrl();
@@ -93,8 +96,7 @@ public class Service {
             return url;
         }
         if (command.equalsIgnoreCase("d")) {
-            StringBuilder stringBuilder = new StringBuilder(url).append("/").append(taskNumber);
-            url = stringBuilder.toString();
+            url = url + "/" + taskNumber;
         }
         return url;
     }
